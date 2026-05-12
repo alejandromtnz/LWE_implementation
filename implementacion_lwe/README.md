@@ -52,6 +52,17 @@ El script genera:
 - efecto de `n` sobre tiempos y tamano aproximado de clave publica;
 - histogramas de `d = v - <u,s> mod q` para `mu=0` y `mu=1`.
 
+Hay dos variantes del histograma:
+
+- `histogram_d_fixed_key`: usa una unica clave fija. Muestra el
+  comportamiento condicionado a una realizacion concreta del vector de error
+  `e`; por eso el ruido acumulado puede aparecer desplazado si `sum(e)` no es
+  cercano a cero.
+- `histogram_d_multikey`: promedia sobre varias claves independientes. Es la
+  version mas adecuada como visualizacion pedagogica del esquema, porque el
+  ruido relativo al centro esperado se concentra alrededor de cero al promediar
+  distintas claves.
+
 La eliminacion gaussiana se hace exactamente en `Z_q`, por lo que el ataque
 lineal incluido requiere que `q` sea primo. Los parametros por defecto usan
 modulos primos pequenos.

@@ -9,6 +9,7 @@ import pandas as pd
 
 from experiments import (
     experiment_decryption_histogram,
+    experiment_decryption_histogram_multikey,
     experiment_n_sweep,
     experiment_noise_sweep,
     experiment_noise_vs_no_noise,
@@ -98,9 +99,18 @@ def main() -> None:
         samples_per_bit=hist_samples,
         seed=args.seed + 4,
     )
-    write_csv(histogram, results_dir / "histogram_d_values.csv")
-    plot_decryption_histogram(histogram, results_dir / "histogram_d")
-    print("OK histogramas de d")
+    write_csv(histogram, results_dir / "histogram_d_fixed_key.csv")
+    plot_decryption_histogram(histogram, results_dir / "histogram_d_fixed_key")
+    print("OK histograma de d con clave fija")
+
+    histogram_multikey = experiment_decryption_histogram_multikey(
+        n_keys=10 if args.quick else 40,
+        samples_per_bit_per_key=max(1, hist_samples // (10 if args.quick else 40)),
+        seed=args.seed + 5,
+    )
+    write_csv(histogram_multikey, results_dir / "histogram_d_multikey.csv")
+    plot_decryption_histogram(histogram_multikey, results_dir / "histogram_d_multikey")
+    print("OK histograma de d multiclave")
 
     all_summaries = pd.concat(
         [

@@ -299,6 +299,56 @@ def experiment_decryption_histogram(
     return pd.DataFrame(rows)
 
 
+def experiment_decryption_histogram_multikey(
+    n: int = 64,
+    q: int = 257,
+    sigma: float = 6.0,
+    n_keys: int = 40,
+    samples_per_bit_per_key: int = 100,
+    seed: int = 5001,
+) -> pd.DataFrame:
+    """Muestrea d usando varias claves independientes.
+
+    Esta variante reduce el sesgo visual que puede aparecer al condicionar todo
+    el histograma a una unica realizacion del vector de error e.
+    """
+
+    seed_rng = np.random.default_rng(seed)
+    rows: list[dict[str, object]] = []
+
+    for key_index in range(n_keys):
+        key_seed = int(seed_rng.integers(0, 2**32 - 1))
+        rng = np.random.default_rng(key_seed)
+        scheme = LWEScheme(n=n, q=q, sigma=sigma, rng=rng)
+        keypair = scheme.keygen()
+
+        for bit in (0, 1):
+            for sample_index in range(samples_per_bit_per_key):
+                ciphertext = scheme.encrypt_bit(keypair.public, bit)
+                d = scheme.decryption_value(keypair.secret, ciphertext)
+                centered_noise = int(centered_mod(d - bit * scheme.message_gap, q))
+                rows.append(
+                    {
+                        "experiment": "decryption_histogram_multikey",
+                        "key_index": key_index,
+                        "key_seed": key_seed,
+                        "sample": sample_index,
+                        "bit": bit,
+                        "n": n,
+                        "m": 2 * n,
+                        "q": q,
+                        "sigma": sigma,
+                        "d": d,
+                        "message_center": bit * scheme.message_gap,
+                        "centered_noise": centered_noise,
+                        "decrypted": scheme.decrypt_from_value(d),
+                        "failure": int(scheme.decrypt_from_value(d) != bit),
+                    }
+                )
+
+    return pd.DataFrame(rows)
+
+
 def write_csv(df: pd.DataFrame, path: str | Path) -> None:
     output = Path(path)
     output.parent.mkdir(parents=True, exist_ok=True)
