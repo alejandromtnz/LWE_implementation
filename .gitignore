@@ -1,0 +1,8 @@
+implementacion_lwe/.venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+
+TFG montado v0.3.pdf
+TFG montado v0.3.tex
