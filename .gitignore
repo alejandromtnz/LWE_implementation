@@ -1,8 +1,14 @@
-implementacion_lwe/.venv/
 .venv/
 __pycache__/
 *.pyc
 .DS_Store
 
-TFG montado v0.3.pdf
-TFG montado v0.3.tex
+TFG pdf/
+*.pdf
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
