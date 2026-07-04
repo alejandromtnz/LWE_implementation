@@ -1,93 +1,49 @@
-# Implementacion practica LWE simplificada
+# LWE Implementation — Bachelor's Thesis (TFG)
 
-Esta carpeta contiene una implementacion experimental, pequena y reproducible
-de un esquema de cifrado basado en LWE. No implementa Kyber, Dilithium,
-FrodoKEM ni ningun esquema moderno completo. La finalidad es estudiar a escala
-controlada el papel del ruido y de parametros como `n`, `m` y `q`.
+Final-degree project (TFG) on **post-quantum cryptography**: a small, reproducible
+experimental implementation of a simplified **LWE** (Learning With Errors)
+encryption scheme, used to study — at a controlled scale — the role of noise and
+of parameters such as `n`, `m` and `q`.
 
-## Estructura
+This repository gathers the written thesis, the defence slides and the code with
+its results.
 
-- `lwe_scheme.py`: nucleo del esquema LWE simplificado tipo Regev.
-- `experiments.py`: experimentos, medicion de tiempos e intervalos de confianza.
-- `plots.py`: generacion de graficas con matplotlib.
-- `run_experiments.py`: script principal.
-- `results/`: CSV y figuras generadas.
-- `requirements.txt`: dependencias Python.
+## Contents
 
-## Esquema implementado
+| | |
+|---|---|
+| 📄 **Thesis** | [`TFG_LWE.pdf`](./TFG_LWE.pdf) — full written report |
+| 🖥️ **Slides** | [`presentacion_LWE.pdf`](./presentacion_LWE.pdf) — defence presentation |
+| 💻 **Code & results** | [`src/`](./src) — Python implementation, experiments and generated figures |
 
-La generacion de claves toma:
+> Rename the PDF/slide files above to match whatever you upload (e.g.
+> `presentacion_LWE.pptx`), and update these links accordingly.
 
-```text
-A <- Z_q^{m x n}
-s <- Z_q^n
-e <- ruido discreto
-b = A s + e mod q
-```
+## About the project
 
-Para cifrar un bit `mu` se elige `r` binario y se calcula:
+The scheme is a Regev-style simplified LWE encryption. It does **not** implement
+Kyber, Dilithium, FrodoKEM or any complete modern scheme — the goal is didactic:
+to observe empirically how the accumulated noise `eᵀr` governs the decryption
+failure rate, and how it depends on the noise level `σ`, the modulus `q` and the
+dimension `n`.
 
-```text
-u = A^T r mod q
-v = b^T r + mu * floor(q/2) mod q
-```
+The experiments include: noiseless vs. noisy comparison (with exact recovery of
+`s` by modular Gaussian elimination when `σ = 0`), a noise sweep over `σ`, the
+effect of `q`, the effect of `n` on runtime and public-key size, and histograms
+of `d = v − ⟨u,s⟩ mod q`.
 
-El descifrado calcula:
+## Running the code
 
-```text
-d = v - <u,s> mod q
-```
-
-y decide si `d` esta mas cerca de `0` o de `floor(q/2)`. Asi, el termino que
-controla el fallo es el ruido acumulado `e^T r`.
-
-## Experimentos
-
-El script genera:
-
-- comparacion sin ruido frente a ruido, incluyendo recuperacion exacta de `s`
-  por eliminacion gaussiana modular cuando `sigma = 0`;
-- barrido de ruido `sigma`;
-- efecto de `q` con `sigma` fijo;
-- efecto de `n` sobre tiempos y tamano aproximado de clave publica;
-- histogramas de `d = v - <u,s> mod q` para `mu=0` y `mu=1`.
-
-Hay dos variantes del histograma:
-
-- `histogram_d_fixed_key`: usa una unica clave fija. Muestra el
-  comportamiento condicionado a una realizacion concreta del vector de error
-  `e`; por eso el ruido acumulado puede aparecer desplazado si `sum(e)` no es
-  cercano a cero.
-- `histogram_d_multikey`: promedia sobre varias claves independientes. Es la
-  version mas adecuada como visualizacion pedagogica del esquema, porque el
-  ruido relativo al centro esperado se concentra alrededor de cero al promediar
-  distintas claves.
-
-La eliminacion gaussiana se hace exactamente en `Z_q`, por lo que el ataque
-lineal incluido requiere que `q` sea primo. Los parametros por defecto usan
-modulos primos pequenos.
-
-## Ejecucion
-
-Desde esta carpeta:
+See [`src/README.md`](./src/README.md) for full instructions. In short:
 
 ```bash
-source .venv/bin/activate
-python run_experiments.py
+cd src
+pip install -r requirements.txt
+python run_experiments.py            # add --quick for a fast check
 ```
 
-Para una comprobacion rapida:
+CSVs and figures are written to `src/results/`.
 
-```bash
-source .venv/bin/activate
-python run_experiments.py --quick
-```
+---
 
-Para generar mas muestras de cara al TFG:
-
-```bash
-source .venv/bin/activate
-python run_experiments.py --trials 1000 --repeats 30 --hist-samples 10000
-```
-
-Los CSV y las figuras se guardan en `results/`.
+**Author:** Alejandro Martínez Ronda

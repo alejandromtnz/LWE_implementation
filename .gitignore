@@ -1,10 +1,11 @@
+# Entornos y cachés
 .venv/
 __pycache__/
 *.pyc
 .DS_Store
+src/results/.matplotlib/
 
-TFG pdf/
-*.pdf
+# Artefactos de compilación de LaTeX (NO ignoramos los .pdf finales)
 *.aux
 *.log
 *.out
