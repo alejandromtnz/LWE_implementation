@@ -2,6 +2,7 @@
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![Tests](https://github.com/alejandromtnz/LWE_implementation/actions/workflows/tests.yml/badge.svg)](https://github.com/alejandromtnz/LWE_implementation/actions/workflows/tests.yml)
 
 A from-scratch, reproducible implementation of a simplified **Learning With
 Errors (LWE)** encryption scheme (Regev-style), built for my Bachelor's
