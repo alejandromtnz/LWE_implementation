@@ -144,8 +144,8 @@ the bias a single fixed key's error vector introduces:
 ## Quick start
 
 ```bash
-git clone https://github.com/alejandromtnz/lwe-crypto-lab.git
-cd lwe-crypto-lab/src
+git clone https://github.com/alejandromtnz/LWE_implementation.git
+cd LWE_implementation/src
 pip install -r requirements.txt
 python run_experiments.py            # add --quick for a ~30s smoke test
 ```
